@@ -35,4 +35,14 @@ public class ClientService {
         String hash = Utils.passwordHash(client.getSalt(), password);
         return hash.equals(client.getPassword());
     }
+
+    @Transactional
+    public void changePassword(String login, String password) {
+        Client client = clientRepository.findByLogin(login);
+        String salt = Utils.generateRandomString(10);
+        String hash = Utils.passwordHash(salt, password);
+        client.setSalt(salt);
+        client.setPassword(hash);
+        clientRepository.save(client);
+    }
 }
